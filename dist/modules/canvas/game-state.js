@@ -1,18 +1,19 @@
 import Socket from '../socket/connect.js';
-import Render from '/render.js';
-import Splash from "../states/splash.js";
+import Render from './render.js';
+import Splash from "./states/splash.js";
 
 var Game = function() {
-    var socket = new Socket();
+    var canvas = document.getElementById("battleships");
+    this.socket = new Socket();
     var render = new Render();
     this.state = {
-        page: new Splash()
+        page: "Splash",
+        interface: new Splash(this.socket)
     };
 
-    Socket.io.on("start-game", function(data) {
+    /*socket.io.on("start-game", function(data) {
 
-    });
-
+    });*/
 
     // draws the game on Canvas
     this.render = function() {

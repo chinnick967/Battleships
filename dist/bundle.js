@@ -94,7 +94,7 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\nvar Button = function(properties) {\r\n    var canvas = document.getElementById(\"battleships\");\r\n    var ctx = canvas.getContext(\"2d\");\r\n    this.properties = properties; // x, y, background, border, width\r\n    \r\n    this.draw = function() {\r\n        ctx.fillStyle = this.properties.background;\r\n        ctx.strokeStyle = this.properties.border;\r\n        ctx.fillRect(this.properties.x, this.properties.y, this.properties.width, this.properties.width * .6);\r\n        ctx.rect(this.properties.x, this.properties.y, this.properties.width, this.properties.width * .6);\r\n        ctx.stroke();\r\n    }\r\n\r\n    this.clicked = function() {\r\n\r\n    }\r\n\r\n    // onclick event for canvas\r\n}\r\n\r\n/* harmony default export */ __webpack_exports__[\"default\"] = (Button);\n\n//# sourceURL=webpack:///./dist/modules/canvas/UI/button.js?");
+eval("__webpack_require__.r(__webpack_exports__);\nvar Button = function(properties, actions) {\n    var canvas = document.getElementById(\"battleships\");\n    var ctx = canvas.getContext(\"2d\");\n    this.properties = properties; // x, y, background, border, width, text, color\n    this.properties.height = this.properties.width * .25;\n    \n    this.draw = function() {\n        ctx.fillStyle = this.properties.background;\n        ctx.strokeStyle = this.properties.border;\n        ctx.fillRect(this.properties.x, this.properties.y, this.properties.width, this.properties.height);\n        ctx.rect(this.properties.x, this.properties.y, this.properties.width, this.properties.height);\n        ctx.stroke();\n\n        var fontSize = this.properties.width * .15;\n        ctx.font = fontSize + \"px Impact\";\n        ctx.fillStyle = this.properties.color;\n        ctx.strokeStyle = \"black\";\n        ctx.lineWidth = 4;\n        ctx.strokeText(this.properties.text, this.properties.x + (this.properties.width / 2 - fontSize), this.properties.y + (this.properties.height / 2 + fontSize / 2.5));\n        ctx.fillText(this.properties.text, this.properties.x + (this.properties.width / 2 - fontSize), this.properties.y + (this.properties.height / 2 + fontSize / 2.5));\n    }\n\n    this.inbounds = function() {\n        if (actions.mouse.x >= this.properties.x && actions.mouse.x <= this.properties.x + this.properties.width && actions.mouse.y >= this.properties.y && actions.mouse.y <= this.properties.y + this.properties.height) {\n            return true;\n        }\n        return false;\n    }\n\n    // onclick event for canvas\n    canvas.addEventListener(\"click\", function(event) {   \n        if (this.inbounds()) {\n            this.properties.click();\n        }\n    }.bind(this));\n\n    // onhover event for canvas\n    canvas.addEventListener(\"mousemove\", function(event) {   \n        if (this.inbounds()) {\n            canvas.style.cursor = \"pointer\";\n            setTimeout(function() {\n                if (!this.inbounds()) {\n                    canvas.style.cursor = \"default\";\n                }\n            }.bind(this), 50);\n        }\n    }.bind(this));\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Button);\n\n//# sourceURL=webpack:///./dist/modules/canvas/UI/button.js?");
 
 /***/ }),
 
@@ -106,6 +106,18 @@ eval("__webpack_require__.r(__webpack_exports__);\nvar Button = function(propert
 /***/ (function(module, exports) {
 
 eval("\n\n//# sourceURL=webpack:///./dist/modules/canvas/UI/grid.js?");
+
+/***/ }),
+
+/***/ "./dist/modules/canvas/UI/label.js":
+/*!*****************************************!*\
+  !*** ./dist/modules/canvas/UI/label.js ***!
+  \*****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\nvar Label = function(properties) {\n    var canvas = document.getElementById(\"battleships\");\n    var ctx = canvas.getContext(\"2d\");\n    this.properties = properties; // x, y, text, fontSize, color\n    \n    this.draw = function() {\n        ctx.font = this.properties.fontSize + \"px Impact\";\n        ctx.fillStyle = this.properties.color;\n        ctx.strokeStyle = \"black\";\n        ctx.lineWidth = 4;\n        ctx.strokeText(this.properties.text, this.properties.x, this.properties.y);\n        ctx.fillText(this.properties.text, this.properties.x, this.properties.y);\n    }\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Label);\n\n//# sourceURL=webpack:///./dist/modules/canvas/UI/label.js?");
 
 /***/ }),
 
@@ -124,10 +136,11 @@ eval("\n\n//# sourceURL=webpack:///./dist/modules/canvas/UI/square.js?");
 /*!****************************************!*\
   !*** ./dist/modules/canvas/actions.js ***!
   \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-eval("\n\n//# sourceURL=webpack:///./dist/modules/canvas/actions.js?");
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\nvar Actions = function(socket) {\n    var canvas = document.getElementById(\"battleships\");\n    this.mouse = {\n        x: 0,\n        y: 0\n    }\n\n    this.play = function() {\n        socket.play();\n    }\n\n    // track mouse position\n    canvas.addEventListener(\"mousemove\", function(evt) {   \n        var rect = canvas.getBoundingClientRect();\n        this.mouse = {\n          x: evt.clientX - rect.left,\n          y: evt.clientY - rect.top\n        };\n    }.bind(this), false);\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Actions);\n\n//# sourceURL=webpack:///./dist/modules/canvas/actions.js?");
 
 /***/ }),
 
@@ -139,7 +152,7 @@ eval("\n\n//# sourceURL=webpack:///./dist/modules/canvas/actions.js?");
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _socket_connect_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../socket/connect.js */ \"./dist/modules/socket/connect.js\");\n!(function webpackMissingModule() { var e = new Error(\"Cannot find module '/render.js'\"); e.code = 'MODULE_NOT_FOUND'; throw e; }());\n!(function webpackMissingModule() { var e = new Error(\"Cannot find module '../states/splash.js'\"); e.code = 'MODULE_NOT_FOUND'; throw e; }());\n\r\n\r\n\r\n\r\nvar Game = function() {\r\n    var socket = new _socket_connect_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"]();\r\n    var render = new !(function webpackMissingModule() { var e = new Error(\"Cannot find module '/render.js'\"); e.code = 'MODULE_NOT_FOUND'; throw e; }())();\r\n    this.state = {\r\n        page: new !(function webpackMissingModule() { var e = new Error(\"Cannot find module '../states/splash.js'\"); e.code = 'MODULE_NOT_FOUND'; throw e; }())()\r\n    };\r\n\r\n    _socket_connect_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"].io.on(\"start-game\", function(data) {\r\n\r\n    });\r\n\r\n\r\n    // draws the game on Canvas\r\n    this.render = function() {\r\n        render.drawGame(this.state);\r\n        requestAnimationFrame(this.render);\r\n    }.bind(this);\r\n    this.render();\r\n}\r\n\r\n/* harmony default export */ __webpack_exports__[\"default\"] = (Game);\n\n//# sourceURL=webpack:///./dist/modules/canvas/game-state.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _socket_connect_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../socket/connect.js */ \"./dist/modules/socket/connect.js\");\n/* harmony import */ var _render_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./render.js */ \"./dist/modules/canvas/render.js\");\n/* harmony import */ var _states_splash_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./states/splash.js */ \"./dist/modules/canvas/states/splash.js\");\n\n\n\n\nvar Game = function() {\n    var canvas = document.getElementById(\"battleships\");\n    this.socket = new _socket_connect_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"]();\n    var render = new _render_js__WEBPACK_IMPORTED_MODULE_1__[\"default\"]();\n    this.state = {\n        page: \"Splash\",\n        interface: new _states_splash_js__WEBPACK_IMPORTED_MODULE_2__[\"default\"](this.socket)\n    };\n\n    /*socket.io.on(\"start-game\", function(data) {\n\n    });*/\n\n    // draws the game on Canvas\n    this.render = function() {\n        render.drawGame(this.state);\n        requestAnimationFrame(this.render);\n    }.bind(this);\n    this.render();\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Game);\n\n//# sourceURL=webpack:///./dist/modules/canvas/game-state.js?");
 
 /***/ }),
 
@@ -151,7 +164,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _soc
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _game_state_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game-state.js */ \"./dist/modules/canvas/game-state.js\");\n\r\n\r\n$(function() {\r\n\r\n    var game = new _game_state_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"]();\r\n\r\n});\n\n//# sourceURL=webpack:///./dist/modules/canvas/init.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _game_state_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./game-state.js */ \"./dist/modules/canvas/game-state.js\");\n\n\n$(function() {\n\n    var game = new _game_state_js__WEBPACK_IMPORTED_MODULE_0__[\"default\"]();\n\n});\n\n//# sourceURL=webpack:///./dist/modules/canvas/init.js?");
 
 /***/ }),
 
@@ -163,7 +176,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _gam
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\nvar Render = function() {\r\n    var canvas = document.getElementById(\"battleships\");\r\n    var ctx = canvas.getContext(\"2d\");\r\n    \r\n    this.drawGame = function(state) {\r\n        switch(state.page) {\r\n            case \"Home\":\r\n                this.drawHomePage(state);\r\n                break;\r\n            default:\r\n                break;\r\n        }\r\n    }.bind(this);\r\n}\r\n\r\n/* harmony default export */ __webpack_exports__[\"default\"] = (Render);\n\n//# sourceURL=webpack:///./dist/modules/canvas/render.js?");
+eval("__webpack_require__.r(__webpack_exports__);\nvar Render = function() {\n    var canvas = document.getElementById(\"battleships\");\n    var ctx = canvas.getContext(\"2d\");\n    \n    this.drawGame = function(state) {\n        var ui = state.interface.ui;\n        ctx.clearRect(0, 0, canvas.width, canvas.height);\n        for (var i = 0; i < ui.length; i++) {\n            ctx.save();\n            ui[i].draw();\n            ctx.restore();\n        }\n    }.bind(this);\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Render);\n\n//# sourceURL=webpack:///./dist/modules/canvas/render.js?");
 
 /***/ }),
 
@@ -197,7 +210,7 @@ eval("\n\n//# sourceURL=webpack:///./dist/modules/canvas/states/main.js?");
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _UI_button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../UI/button */ \"./dist/modules/canvas/UI/button.js\");\n\r\n\r\nvar Splash = function() {\r\n    this.ui = [\r\n        new _UI_button__WEBPACK_IMPORTED_MODULE_0__[\"default\"]({x: \"200px\", y: \"200px\", background: \"white\", border: \"green\", width: \"200px\"})\r\n    ]\r\n}\r\n\r\n/* harmony default export */ __webpack_exports__[\"default\"] = (Splash);\n\n//# sourceURL=webpack:///./dist/modules/canvas/states/splash.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _UI_button__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../UI/button */ \"./dist/modules/canvas/UI/button.js\");\n/* harmony import */ var _UI_label__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../UI/label */ \"./dist/modules/canvas/UI/label.js\");\n/* harmony import */ var _actions__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../actions */ \"./dist/modules/canvas/actions.js\");\n\n\n\n\nvar Splash = function(socket) {\n    var canvas = document.getElementById(\"battleships\");\n    var actions = new _actions__WEBPACK_IMPORTED_MODULE_2__[\"default\"](socket);\n    this.ui = [\n        new _UI_button__WEBPACK_IMPORTED_MODULE_0__[\"default\"]({x: canvas.width / 2 - 150, y: 300, background: \"#28B6D1\", border: \"#027B92\", width: 300, text: \"Start\", color: \"white\", click: function() {actions.play()}}, actions),\n        new _UI_label__WEBPACK_IMPORTED_MODULE_1__[\"default\"]({x: canvas.width / 2 - 280, y: 220, text: \"Battleships\", fontSize: 120, color: \"white\"})\n    ]\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Splash);\n\n//# sourceURL=webpack:///./dist/modules/canvas/states/splash.js?");
 
 /***/ }),
 
@@ -208,7 +221,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _UI_
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("// Third Party Dependencies\r\nwindow.jQuery = window.$ = __webpack_require__(/*! ../../node_modules/jquery/dist/jquery.min.js */ \"./node_modules/jquery/dist/jquery.min.js\");\r\n\r\n// Scripts\r\n__webpack_require__(/*! ./canvas/game-state.js */ \"./dist/modules/canvas/game-state.js\");\r\n__webpack_require__(/*! ./socket/connect.js */ \"./dist/modules/socket/connect.js\");\r\n__webpack_require__(/*! ./canvas/init.js */ \"./dist/modules/canvas/init.js\");\r\n__webpack_require__(/*! ./canvas/render.js */ \"./dist/modules/canvas/render.js\");\r\n__webpack_require__(/*! ./canvas/actions.js */ \"./dist/modules/canvas/actions.js\");\r\n__webpack_require__(/*! ./canvas/states/end-game.js */ \"./dist/modules/canvas/states/end-game.js\");\r\n__webpack_require__(/*! ./canvas/states/main.js */ \"./dist/modules/canvas/states/main.js\");\r\n__webpack_require__(/*! ./canvas/states/splash.js */ \"./dist/modules/canvas/states/splash.js\");\r\n__webpack_require__(/*! ./canvas/UI/button.js */ \"./dist/modules/canvas/UI/button.js\");\r\n__webpack_require__(/*! ./canvas/UI/grid.js */ \"./dist/modules/canvas/UI/grid.js\");\r\n__webpack_require__(/*! ./canvas/UI/square.js */ \"./dist/modules/canvas/UI/square.js\");\n\n//# sourceURL=webpack:///./dist/modules/index.js?");
+eval("// Third Party Dependencies\nwindow.jQuery = window.$ = __webpack_require__(/*! ../../node_modules/jquery/dist/jquery.min.js */ \"./node_modules/jquery/dist/jquery.min.js\");\n\n// Scripts\n__webpack_require__(/*! ./canvas/game-state.js */ \"./dist/modules/canvas/game-state.js\");\n__webpack_require__(/*! ./socket/connect.js */ \"./dist/modules/socket/connect.js\");\n__webpack_require__(/*! ./canvas/init.js */ \"./dist/modules/canvas/init.js\");\n__webpack_require__(/*! ./canvas/render.js */ \"./dist/modules/canvas/render.js\");\n__webpack_require__(/*! ./canvas/actions.js */ \"./dist/modules/canvas/actions.js\");\n__webpack_require__(/*! ./canvas/states/end-game.js */ \"./dist/modules/canvas/states/end-game.js\");\n__webpack_require__(/*! ./canvas/states/main.js */ \"./dist/modules/canvas/states/main.js\");\n__webpack_require__(/*! ./canvas/states/splash.js */ \"./dist/modules/canvas/states/splash.js\");\n__webpack_require__(/*! ./canvas/UI/button.js */ \"./dist/modules/canvas/UI/button.js\");\n__webpack_require__(/*! ./canvas/UI/grid.js */ \"./dist/modules/canvas/UI/grid.js\");\n__webpack_require__(/*! ./canvas/UI/square.js */ \"./dist/modules/canvas/UI/square.js\");\n\n//# sourceURL=webpack:///./dist/modules/index.js?");
 
 /***/ }),
 
@@ -220,7 +233,7 @@ eval("// Third Party Dependencies\r\nwindow.jQuery = window.$ = __webpack_requir
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\nvar Socket = function() {\r\n    this.io = io();\r\n\r\n    this.play = function() {\r\n        var gameID = false;\r\n        if (localStorage.gameID != null) {\r\n            gameID = localStorage.gameID;\r\n        }\r\n        io.emit(\"play\", {gameID: gameID});\r\n    }\r\n\r\n}\r\n\r\n/* harmony default export */ __webpack_exports__[\"default\"] = (Socket);\n\n//# sourceURL=webpack:///./dist/modules/socket/connect.js?");
+eval("__webpack_require__.r(__webpack_exports__);\nvar Socket = function() {\n    this.io = io();\n\n    this.play = function() {\n        var gameID = false;\n        if (localStorage.gameID != null) {\n            gameID = localStorage.gameID;\n        }\n        this.io.emit(\"play\", {gameID: gameID});\n    }\n\n}\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (Socket);\n\n//# sourceURL=webpack:///./dist/modules/socket/connect.js?");
 
 /***/ }),
 

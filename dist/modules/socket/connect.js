@@ -6,7 +6,7 @@ var Socket = function() {
         if (localStorage.gameID != null) {
             gameID = localStorage.gameID;
         }
-        io.emit("play", {gameID: gameID});
+        this.io.emit("play", {gameID: gameID});
     }
 
 }

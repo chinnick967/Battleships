@@ -3,12 +3,12 @@ var Render = function() {
     var ctx = canvas.getContext("2d");
     
     this.drawGame = function(state) {
-        switch(state.page) {
-            case "Home":
-                this.drawHomePage(state);
-                break;
-            default:
-                break;
+        var ui = state.interface.ui;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < ui.length; i++) {
+            ctx.save();
+            ui[i].draw();
+            ctx.restore();
         }
     }.bind(this);
 }
