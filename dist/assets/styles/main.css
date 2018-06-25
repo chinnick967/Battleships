@@ -1,0 +1,12 @@
+body {
+    background: black;
+    color: white;
+    margin: 0;
+}
+
+canvas {
+    position: relative;
+    margin: 0 auto;
+    display: block;
+    background: white;
+}
