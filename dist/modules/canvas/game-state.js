@@ -1,6 +1,7 @@
 import Socket from '../socket/connect.js';
 import Render from './render.js';
 import Splash from "./states/splash.js";
+import Main from "./states/main.js";
 
 var Game = function() {
     var canvas = document.getElementById("battleships");
@@ -25,6 +26,9 @@ var Game = function() {
                 case "Splash":
                     this.state.interface = new Splash(this.socket);
                     break;
+                case "Main":
+                    this.state.interface = new Main(this.socket, this.state);
+                    break;
                 default:
                     break;
             }
@@ -40,8 +44,9 @@ var Game = function() {
 
     // socket events
     
-    socket.io.on("update-state", function(data) {
-        this.updateState(data.state);
+    this.socket.io.on("update-state", function(data) {
+        this.updateState(data);
+        console.log(this.state);
     }.bind(this));
 
 }

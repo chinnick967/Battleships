@@ -5,10 +5,12 @@ var Button = function(properties, actions) {
     this.properties.height = this.properties.width * .25;
     
     this.draw = function() {
-        ctx.fillStyle = this.properties.background;
-        ctx.strokeStyle = this.properties.border;
-        ctx.fillRect(this.properties.x, this.properties.y, this.properties.width, this.properties.height);
+        ctx.beginPath();
         ctx.rect(this.properties.x, this.properties.y, this.properties.width, this.properties.height);
+        ctx.fillStyle = this.properties.background;
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = this.properties.border;
         ctx.stroke();
 
         var fontSize = this.properties.width * .15;

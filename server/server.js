@@ -1,4 +1,5 @@
 // server.js
+
 var express = require('express');  
 var app = express();  
 var server = require('http').createServer(app);  
@@ -6,11 +7,13 @@ var io = require('socket.io')(server);
 var path = require("path");
 var mongo = require('mongodb');
 
+import { createNewGame, trimShips } from './controllers/new-game.controller.js';
+
 var db;
-mongo.connect("mongodb://localhost:27017/battleship", function(err, mydb) {
+mongo.connect("mongodb://localhost:27017", function(err, client) {
     if (!err) {
         console.log("Connected to Mongodb");
-        db = mydb;
+        db = client.db('battleships');
     } else {
         console.log("Connection to Mongodb failed: " + err);
         process.exit(1);
@@ -33,12 +36,15 @@ app.get('/bundle', function(req, res, next) {
 
 io.on('connection', (socket) => {
 
-    socket.on('play', (data) => {
-        console.log("Play request received");
+    socket.on('start-game', (data) => {
         if (data.gameID) {
             // reconnect to game, return old game state to user
         } else {
             // start new game, clear disconnect timeout, return new game state to user
+            var game = createNewGame(db);
+            db.collection("games").insertOne(game);
+            game = trimShips(game); // strips out player info for the opposing player
+            socket.emit('update-state', game);
         }
     });
 
