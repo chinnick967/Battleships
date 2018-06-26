@@ -11,9 +11,25 @@ var Game = function() {
         interface: new Splash(this.socket)
     };
 
-    /*socket.io.on("start-game", function(data) {
+    this.updateState = function(update) {
+        var previousState = Object.assign({}, this.state);
+        for (var key in update) {
+            this.state[key] = update[key];
+        }
+        this.updateInterface(previousState);
+    }
 
-    });*/
+    this.updateInterface = function(previousState) {
+        if (this.state.page != previousState.page) {
+            switch (this.state.page) {
+                case "Splash":
+                    this.state.interface = new Splash(this.socket);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
     // draws the game on Canvas
     this.render = function() {
@@ -21,6 +37,13 @@ var Game = function() {
         requestAnimationFrame(this.render);
     }.bind(this);
     this.render();
+
+    // socket events
+    
+    socket.io.on("update-state", function(data) {
+        this.updateState(data.state);
+    }.bind(this));
+
 }
 
 export default Game;

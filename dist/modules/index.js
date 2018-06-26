@@ -13,3 +13,4 @@ require("./canvas/states/splash.js");
 require("./canvas/UI/button.js");
 require("./canvas/UI/grid.js");
 require("./canvas/UI/square.js");
+require("./canvas/UI/ship.js");
