@@ -101,5 +101,5 @@ function shiftShip(ship) {
 
 // shifts the ship based off the x and y shift provided
 function shift(ship, shift) {
-
+    
 }
