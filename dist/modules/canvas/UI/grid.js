@@ -23,7 +23,9 @@ var Grid = function(properties, actions, state) {
             var pointProperties = {
                 x: i * 75 + this.properties.x,
                 y: j * 75 + this.properties.y,
-                attacked: grid[i][j].attacked
+                attacked: grid[i][j].attacked,
+                xCord: j,
+                yCord: i
             }
             this.points[i][j] = new Point(pointProperties, actions); // x, y, attacked
         }

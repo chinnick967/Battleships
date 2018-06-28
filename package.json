@@ -4,7 +4,9 @@
   "description": "Battleship game web app",
   "main": "index.js",
   "babel": {
-    "presets": ["es2015"]
+    "presets": [
+      "es2015"
+    ]
   },
   "scripts": {
     "start": "concurrently \" webpack --watch \" \" cd server && babel-node server.js \" ",

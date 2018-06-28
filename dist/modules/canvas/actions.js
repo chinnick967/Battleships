@@ -9,6 +9,10 @@ var Actions = function(socket) {
         socket.play();
     }
 
+    this.fire = function(x, y) {
+        socket.fire(x, y);
+    }
+
     // track mouse position
     canvas.addEventListener("mousemove", function(evt) {   
         var rect = canvas.getBoundingClientRect();

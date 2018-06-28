@@ -30,14 +30,14 @@ var Button = function(properties, actions) {
     }
 
     // onclick event for canvas
-    canvas.addEventListener("click", function(event) {   
+    $(canvas).on("click", function(event) {   
         if (this.inbounds()) {
             this.properties.click();
         }
     }.bind(this));
 
     // onhover event for canvas
-    canvas.addEventListener("mousemove", function(event) {   
+    $(canvas).on("mousemove", function(event) {   
         if (this.inbounds()) {
             canvas.style.cursor = "pointer";
             setTimeout(function() {

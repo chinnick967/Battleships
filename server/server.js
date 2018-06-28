@@ -8,6 +8,7 @@ var path = require("path");
 var mongo = require('mongodb');
 
 import { createNewGame, trimShips } from './controllers/new-game.controller.js';
+import { fire } from './controllers/user-interactions.controller.js';
 
 var db;
 mongo.connect("mongodb://localhost:27017", function(err, client) {
@@ -45,7 +46,12 @@ io.on('connection', (socket) => {
             db.collection("games").insertOne(game);
             game = trimShips(game); // strips out player info for the opposing player
             socket.emit('update-state', game);
+            socket.emit('save-gameID', {id: game["_id"]});
         }
+    });
+
+    socket.on('fire', (data) => {
+        var hit = fire({x: data.x, y: data.y}, data.id, db);
     });
 
     socket.on('disconnect', () => {

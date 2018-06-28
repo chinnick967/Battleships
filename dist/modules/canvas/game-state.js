@@ -22,6 +22,7 @@ var Game = function() {
 
     this.updateInterface = function(previousState) {
         if (this.state.page != previousState.page) {
+            this.removeEvents();
             switch (this.state.page) {
                 case "Splash":
                     this.state.interface = new Splash(this.socket);
@@ -33,6 +34,11 @@ var Game = function() {
                     break;
             }
         }
+    }
+
+    this.removeEvents = function() {
+        $(canvas).off();
+        canvas.style.cursor = "default"; // resets cursor
     }
 
     // draws the game on Canvas
