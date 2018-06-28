@@ -16,20 +16,29 @@ var Grid = function(properties, actions, state) {
     }
 
     // create and set points
+    console.log("player");
+    console.log(state.turn);
     var grid = state["player" + state.turn].grid;
-    for (var i = 0; i < grid.length; i++) {
-        this.points[i] = [];
-        for (var j = 0; j < grid[i].length; j++) {
+    for (var x = 0; x < grid.length; x++) {
+        this.points[x] = [];
+        for (var y = 0; y < grid[x].length; y++) {
             var pointProperties = {
-                x: i * 75 + this.properties.x,
-                y: j * 75 + this.properties.y,
-                attacked: grid[i][j].attacked,
-                xCord: j,
-                yCord: i
+                x: x * 75 + this.properties.x,
+                y: y * 75 + this.properties.y,
+                attacked: grid[x][y].attacked,
+                xCord: x,
+                yCord: y
             }
-            this.points[i][j] = new Point(pointProperties, actions); // x, y, attacked
+            this.points[x][y] = new Point(pointProperties, actions); // x, y, attacked
         }
     }
+
+    state.socketEvents.push("fire-result");
+    actions.socket.io.on("fire-result", function(data) {
+        for (var i = 0; i < data.cords.length; i++) {
+            this.points[data.cords[i].x][data.cords[i].y].hit(data.attack);
+        }
+    }.bind(this));
 }
 
 export default Grid;

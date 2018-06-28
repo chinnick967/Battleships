@@ -8,7 +8,7 @@ var path = require("path");
 var mongo = require('mongodb');
 
 import { createNewGame, trimShips } from './controllers/new-game.controller.js';
-import { fire } from './controllers/user-interactions.controller.js';
+import { fire, endTurn } from './controllers/user-interactions.controller.js';
 
 var db;
 mongo.connect("mongodb://localhost:27017", function(err, client) {
@@ -51,7 +51,22 @@ io.on('connection', (socket) => {
     });
 
     socket.on('fire', (data) => {
-        var hit = fire({x: data.x, y: data.y}, data.id, db);
+        fire({x: data.x, y: data.y}, data.id, db, function(hit) {
+            if (hit) {
+                socket.emit('update-state', hit.state);
+                socket.emit('fire-result', hit.result);
+            } else {
+                socket.emit('message', {type: "error", text: "You have already attacked this turn"});
+            }
+        });
+    });
+
+    socket.on('end-turn', (data) => {
+        console.log("id");
+        console.log(data.id);
+        endTurn(data.id, db, function(newState) {
+            socket.emit('update-state', newState);
+        });
     });
 
     socket.on('disconnect', () => {

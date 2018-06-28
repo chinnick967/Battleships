@@ -3,27 +3,45 @@ var Point = function(properties, actions) {
     var ctx = canvas.getContext("2d");
     this.properties = properties; // x, y, attacked
     this.properties.size = 75;
-    switch(this.properties.attacked) { // was originally going to have different borders for each type, hence the multiple declarations
+    this.properties.flip = true;
+
+    switch(this.properties.attacked) {
         case "Hit":
             this.properties.background = "#AA3939";
+            this.properties.backgroundSave = "#AA3939";
             this.properties.border = "white";
             this.properties.canAttack = false;
             break;
         case "Sunk":
             this.properties.background = "#550000";
+            this.properties.backgroundSave = "#550000";
             this.properties.border = "white";
             this.properties.canAttack = false;
             break;
         case "Missed":
             this.properties.background = "#84969F";
+            this.properties.backgroundSave = "#84969F";
             this.properties.border = "white";
             this.properties.canAttack = false;
             break;
         default:
             this.properties.background = "#28b6d1";
+            this.properties.backgroundSave = "#28b6d1";
             this.properties.border = "white";
             this.properties.canAttack = true;
             break;
+    }
+
+    this.hit = function(type) {
+        var interval = setInterval(function(){ 
+            this.properties.flip = this.properties.flip === false ? true : false;
+            if (this.properties.flip) {
+                this.properties.background = this.properties.backgroundSave;
+            } else {
+                this.properties.background = "#28b6d1";
+            }
+        }.bind(this), 400);
+        setTimeout(function( ) { clearInterval( interval ); this.properties.background = this.properties.backgroundSave; }.bind(this), 2000);
     }
     
     this.draw = function() {

@@ -18,8 +18,9 @@ var Button = function(properties, actions) {
         ctx.fillStyle = this.properties.color;
         ctx.strokeStyle = "black";
         ctx.lineWidth = 4;
-        ctx.strokeText(this.properties.text, this.properties.x + (this.properties.width / 2 - fontSize), this.properties.y + (this.properties.height / 2 + fontSize / 2.5));
-        ctx.fillText(this.properties.text, this.properties.x + (this.properties.width / 2 - fontSize), this.properties.y + (this.properties.height / 2 + fontSize / 2.5));
+        ctx.textAlign="center";
+        ctx.strokeText(this.properties.text, this.properties.x + this.properties.width / 2, this.properties.y + (this.properties.height / 2 + fontSize / 2.5));
+        ctx.fillText(this.properties.text, this.properties.x + this.properties.width / 2, this.properties.y + (this.properties.height / 2 + fontSize / 2.5));
     }
 
     this.inbounds = function() {

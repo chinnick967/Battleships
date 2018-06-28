@@ -14,6 +14,10 @@ var Socket = function() {
         this.io.emit("fire", {x: x, y: y, id: this.gameID});
     }
 
+    this.endTurn = function() {
+        this.io.emit("end-turn", {id: this.gameID});
+    }
+
     this.io.on("save-gameID", function(data) {
         this.gameID = data.id;
         // save to localstorage as well for reconnect

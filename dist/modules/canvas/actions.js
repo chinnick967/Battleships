@@ -1,4 +1,5 @@
 var Actions = function(socket) {
+    this.socket = socket;
     var canvas = document.getElementById("battleships");
     this.mouse = {
         x: 0,
@@ -11,6 +12,10 @@ var Actions = function(socket) {
 
     this.fire = function(x, y) {
         socket.fire(x, y);
+    }
+
+    this.endTurn = function() {
+        socket.endTurn();
     }
 
     // track mouse position

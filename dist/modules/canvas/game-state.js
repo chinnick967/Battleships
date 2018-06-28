@@ -9,7 +9,8 @@ var Game = function() {
     var render = new Render();
     this.state = {
         page: "Splash",
-        interface: new Splash(this.socket)
+        interface: new Splash(this.socket),
+        socketEvents: []
     };
 
     this.updateState = function(update) {
@@ -21,24 +22,28 @@ var Game = function() {
     }
 
     this.updateInterface = function(previousState) {
-        if (this.state.page != previousState.page) {
-            this.removeEvents();
-            switch (this.state.page) {
-                case "Splash":
-                    this.state.interface = new Splash(this.socket);
-                    break;
-                case "Main":
-                    this.state.interface = new Main(this.socket, this.state);
-                    break;
-                default:
-                    break;
-            }
+        this.removeEvents();
+        switch (this.state.page) {
+            case "Splash":
+                this.state.interface = new Splash(this.socket);
+                break;
+            case "Main":
+                this.state.interface = new Main(this.socket, this.state);
+                break;
+            default:
+                break;
         }
     }
 
     this.removeEvents = function() {
         $(canvas).off();
         canvas.style.cursor = "default"; // resets cursor
+
+        var events = this.state.socketEvents;
+        for (var i = 0; i < events.length; i++) { // clear all UI element socket event listeners
+            this.socket.io.off(events[i]);
+        }
+        events.length = 0;
     }
 
     // draws the game on Canvas
@@ -52,6 +57,7 @@ var Game = function() {
     
     this.socket.io.on("update-state", function(data) {
         this.updateState(data);
+        console.log("state updated");
         console.log(this.state);
     }.bind(this));
 
