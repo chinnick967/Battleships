@@ -9,9 +9,7 @@ export function getCurrentGameState(id, db, callback) {
 }
 
 export function updateGameState(id, db, state, callback) {
-    db.collection("games").findOneAndUpdate({"_id": ObjectId(id)}, state, {returnOriginal: false}, function(err, result) {
-        console.log("error");
-        console.log(err);
+    db.collection("games").findOneAndUpdate({"_id": ObjectId(id)}, {$set: state}, {returnOriginal: false}, function(err, result) {
         if (callback) {
             callback(result.value);
         }
