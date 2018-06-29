@@ -10,7 +10,7 @@
   },
   "scripts": {
     "//": "concurrently \" webpack --watch \" \" cd server && babel-node server.js \" ",
-    "start": "cd server && pm2 babel-node server.js",
+    "start": "cd server && pm2 start babel-node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
