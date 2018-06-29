@@ -7,8 +7,8 @@ var io = require('socket.io')(server);
 var path = require("path");
 var mongo = require('mongodb');
 
-import { createNewGame, trimShips } from './controllers/new-game.controller.js';
-import { fire, endTurn } from './controllers/user-interactions.controller.js';
+import { createNewGame, trimShips, endGame } from './controllers/new-game.controller.js';
+import { fire, endTurn, getCurrentGameState } from './controllers/user-interactions.controller.js';
 
 var db;
 mongo.connect("mongodb://localhost:27017", function(err, client) {
@@ -40,6 +40,10 @@ io.on('connection', (socket) => {
     socket.on('start-game', (data) => {
         if (data.gameID) {
             // reconnect to game, return old game state to user
+            getCurrentGameState(data.gameID, db, function(state) {
+                socket.emit('update-state', state);
+                socket.emit('save-gameID', {id: state["_id"]});
+            });
         } else {
             // start new game, clear disconnect timeout, return new game state to user
             var game = createNewGame(db);
@@ -52,20 +56,32 @@ io.on('connection', (socket) => {
 
     socket.on('fire', (data) => {
         fire({x: data.x, y: data.y}, data.id, db, function(hit) {
-            if (hit) {
-                socket.emit('update-state', hit.state);
-                socket.emit('fire-result', hit.result);
-            } else {
-                socket.emit('message', {type: "error", text: "You have already attacked this turn"});
-            }
+            getCurrentGameState(data.id, db, function(state) {
+                if (state.player1.shipsDestroyed == 4 || state.player2.shipsDestroyed == 4) {
+                    endGame(data.id, db, function(finalState) {
+                        socket.emit('update-state', finalState);
+                    });
+                } else {
+                    if (hit) {
+                        socket.emit('update-state', hit.state);
+                        socket.emit('fire-result', hit.result);
+                    } else {
+                        socket.emit('message', {type: "error", text: "You have already attacked this turn"});
+                    }
+                }
+            });
         });
     });
 
     socket.on('end-turn', (data) => {
-        console.log("id");
-        console.log(data.id);
         endTurn(data.id, db, function(newState) {
             socket.emit('update-state', newState);
+        });
+    });
+
+    socket.on('end-game', (data) => {
+        endGame(data.id, db, function(finalState) {
+            socket.emit('update-state', finalState);
         });
     });
 

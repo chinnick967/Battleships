@@ -8,6 +8,9 @@ var Label = function(properties) {
         ctx.fillStyle = this.properties.color;
         ctx.strokeStyle = "black";
         ctx.lineWidth = 4;
+        if (this.properties.center) {
+            ctx.textAlign="center";
+        }
         ctx.strokeText(this.properties.text, this.properties.x, this.properties.y);
         ctx.fillText(this.properties.text, this.properties.x, this.properties.y);
     }

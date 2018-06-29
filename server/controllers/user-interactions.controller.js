@@ -1,6 +1,6 @@
 var ObjectId = require('mongodb').ObjectID;
 
-function getCurrentGameState(id, db, callback) {
+export function getCurrentGameState(id, db, callback) {
     db.collection("games").findOne({"_id": ObjectId(id)}, function(err, result) {
         if (callback) {
             callback(result);
@@ -9,20 +9,11 @@ function getCurrentGameState(id, db, callback) {
 }
 
 export function updateGameState(id, db, state, callback) {
-    db.collection("games").findOneAndUpdate({"_id": ObjectId(id)}, state, function(err, result) {
-        console.log("result");
-        console.log(result.value);
+    db.collection("games").findOneAndUpdate({"_id": ObjectId(id)}, state, {returnOriginal: false}, function(err, result) {
         if (callback) {
             callback(result.value);
         }
     });
-    /*db.collection("games").save(state, function(err, document) {
-        console.log("document");
-        console.log(document);
-        if (callback) {
-            callback(document);
-        }
-    });*/
 }
 
 export function endTurn(id, db, callback) {
@@ -45,9 +36,9 @@ export function fire(cords, id, db, callback) {
         if (!state.attacked) {
             state.attacked = true;
             if (state.turn == 1) {
-                result = attackShip(state.player2.ships, cords, state.player1.grid); // ships, cordinates, grid, returns the status of the attacked point
+                result = attackShip(state.player2.ships, cords, state.player1.grid, state.player1); // ships, cordinates, grid, returns the status of the attacked point
             } else {
-                result = attackShip(state.player1.ships, cords, state.player2.grid);
+                result = attackShip(state.player1.ships, cords, state.player2.grid, state.player2);
             }
             updateGameState(id, db, state);
             callback({result: {attack: result.attack, cords: result.cords}, state: state});
@@ -57,7 +48,7 @@ export function fire(cords, id, db, callback) {
     });
 }
 
-function attackShip(ships, cords, grid) { // This function is messy and needs to be refactored, too tired tonight (logic was changed because I don't wanna pass opponent's ships to the frontend)
+function attackShip(ships, cords, grid, player) { // This function is messy and needs to be refactored, too tired tonight (logic was changed because I don't wanna pass opponent's ships to the frontend)
     var gridPoint = grid[cords.x][cords.y];
     gridPoint.attacked = "Missed";
     var attackedPoints = [{x: cords.x, y: cords.y}];
@@ -69,6 +60,7 @@ function attackShip(ships, cords, grid) { // This function is messy and needs to
                 point.hit = true;
                 gridPoint.attacked = "Hit";
                 if (checkIfSunk(ship)) {
+                    player.shipsDestroyed++;
                     attackedPoints = [];
                     for (var k = 0; k < ship.points.length; k++) { // loop through each ship point if sunk to adjust grid and set values to sunk
                         var shipPoint = ship.points[k];
@@ -78,6 +70,11 @@ function attackShip(ships, cords, grid) { // This function is messy and needs to
                 }
             }
         }
+    }
+    if (gridPoint.attacked === "Missed") {
+        player.shotsMissed++;
+    } else {
+        player.shotsHit++;
     }
     return {attack: gridPoint.attacked, cords: attackedPoints};
 }

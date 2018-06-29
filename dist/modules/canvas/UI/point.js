@@ -64,8 +64,7 @@ var Point = function(properties, actions) {
 
     $(canvas).on("click", function(event) {   
         if (this.inbounds()) {
-            if (!this.attacked) {
-                alert(this.properties.xCord + ", " + this.properties.yCord);
+            if (!this.properties.attacked) {
                 actions.fire(this.properties.xCord, this.properties.yCord);
             } else {
                 alert("You have already attacked this position!")

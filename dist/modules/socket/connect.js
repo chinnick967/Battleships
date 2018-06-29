@@ -4,8 +4,8 @@ var Socket = function() {
 
     this.play = function() {
         var gameID = false;
-        if (localStorage.gameID != null) {
-            gameID = localStorage.gameID;
+        if (localStorage.getItem('gameID')) {
+            gameID = localStorage.getItem('gameID');
         }
         this.io.emit("start-game", {gameID: gameID});
     }
@@ -16,6 +16,10 @@ var Socket = function() {
 
     this.endTurn = function() {
         this.io.emit("end-turn", {id: this.gameID});
+    }
+
+    this.endGame = function() {
+        this.io.emit("end-game", {id: this.gameID});
     }
 
     this.io.on("save-gameID", function(data) {

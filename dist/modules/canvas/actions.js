@@ -6,8 +6,12 @@ var Actions = function(socket) {
         y: 0
     }
 
-    this.play = function() {
-        socket.play();
+    this.play = function(gameID) {
+        if (gameID) {
+            socket.play(gameID);
+        } else {
+            socket.play();
+        }
     }
 
     this.fire = function(x, y) {
@@ -16,6 +20,10 @@ var Actions = function(socket) {
 
     this.endTurn = function() {
         socket.endTurn();
+    }
+
+    this.endGame = function() {
+        socket.endGame();
     }
 
     // track mouse position

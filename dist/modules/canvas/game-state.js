@@ -2,6 +2,7 @@ import Socket from '../socket/connect.js';
 import Render from './render.js';
 import Splash from "./states/splash.js";
 import Main from "./states/main.js";
+import EndGame from "./states/end-game.js";
 
 var Game = function() {
     var canvas = document.getElementById("battleships");
@@ -30,6 +31,10 @@ var Game = function() {
             case "Main":
                 this.state.interface = new Main(this.socket, this.state);
                 break;
+            case "End":
+                localStorage.removeItem("gameID");
+                this.state.interface = new EndGame(this.socket, this.state);
+                break;
             default:
                 break;
         }
@@ -46,6 +51,11 @@ var Game = function() {
         events.length = 0;
     }
 
+    this.prepareForDestruction = function() {
+        this.removeEvents();
+        this.socket.io.off("update-state");
+    }
+
     // draws the game on Canvas
     this.render = function() {
         render.drawGame(this.state);
@@ -60,6 +70,10 @@ var Game = function() {
         console.log("state updated");
         console.log(this.state);
     }.bind(this));
+
+    this.socket.io.on("save-gameID", function(data) {
+        localStorage.setItem('gameID', data.id);
+    });
 
 }
 
